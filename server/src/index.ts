@@ -3,6 +3,9 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/error.middleware";
+import authRoutes from "./routes/auth.routes";
+import { prisma } from "./lib/prisma";
+
 
 const app = express();
 
@@ -14,10 +17,18 @@ app.use(cookieParser());
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
 });
+app.use("/api/auth", authRoutes);
 
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+const start = async () => {
+  await prisma.$connect();
+  console.log("Database connected");
+  app.listen(port, () => console.log(`Server running on port ${port}`));
+};
+
+start().catch((err) => {
+  console.error("Failed to start server", err);
+  process.exit(1);
 });
