@@ -1,7 +1,25 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AuthProvider from "./context/AuthProvider";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-bold text-blue-600">Task Tracker</h1>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route element={<PublicRoute />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Dashboard />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
