@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/error.middleware";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
+import timeLogRoutes from "./routes/timelog.routes";
 import { prisma } from "./lib/prisma";
 
 
@@ -20,6 +21,8 @@ app.get("/health", (_req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/timelogs", timeLogRoutes);
+
 app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
