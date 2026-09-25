@@ -18,7 +18,6 @@ export default function TimeLogs() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
 
       <main className="max-w-3xl mx-auto px-4 py-6">
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
@@ -62,6 +61,5 @@ export default function TimeLogs() {
           </div>
         )}
       </main>
-    </div>
   );
 }

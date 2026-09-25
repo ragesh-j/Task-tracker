@@ -9,7 +9,6 @@ export default function Dashboard() {
     useTasks();
 
   return (
-    <div className="min-h-screen bg-gray-50">
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-4">
         <TaskForm onCreate={createTask} />
 
@@ -32,6 +31,6 @@ export default function Dashboard() {
           ))
         )}
       </main>
-    </div>
+ 
   );
 }
