@@ -23,8 +23,31 @@ export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: 
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description ?? "");
+  const [timerLoading, setTimerLoading] = useState(false);
+  const [statusLoading, setStatusLoading] = useState(false);
+
   const running = task.activeStartTime !== null;
 
+  const handleStart = async () => {
+    if (timerLoading) return;
+    setTimerLoading(true);
+    await onStart(task.id);
+    setTimerLoading(false);
+  };
+
+  const handleStop = async () => {
+    if (timerLoading) return;
+    setTimerLoading(true);
+    await onStop(task.id);
+    setTimerLoading(false);
+  };
+
+  const handleStatusChange = async (status: TaskStatus) => {
+  if (statusLoading) return;
+  setStatusLoading(true);
+  await onUpdate(task.id, { status });
+  setStatusLoading(false);
+};
   const save = async () => {
     if (!title.trim()) return;
     const ok = await onUpdate(task.id, {
@@ -79,26 +102,35 @@ export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: 
 
       <div className="flex flex-wrap items-center gap-3">
         <select
-          value={task.status}
-          onChange={(e) => onUpdate(task.id, { status: e.target.value as TaskStatus })}
-          className="border rounded-lg px-2 py-1 text-sm"
-        >
-          {(Object.keys(statusLabel) as TaskStatus[]).map((s) => (
-            <option key={s} value={s}>
-              {statusLabel[s]}
-            </option>
-          ))}
-        </select>
+  value={task.status}
+  disabled={statusLoading}
+  onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
+  className="border rounded-lg px-2 py-1 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+>
+  {(Object.keys(statusLabel) as TaskStatus[]).map((s) => (
+    <option key={s} value={s}>
+      {statusLabel[s]}
+    </option>
+  ))}
+</select>
 
         <TaskTimer totalSeconds={task.totalSeconds} activeStartTime={task.activeStartTime} />
 
         {running ? (
-          <button onClick={() => onStop(task.id)} className="bg-red-600 text-white rounded-lg px-3 py-1 text-sm">
-            Stop
+          <button
+            onClick={handleStop}
+            disabled={timerLoading}
+            className="bg-red-600 text-white rounded-lg px-3 py-1 text-sm disabled:opacity-60 disabled:cursor-not-allowed min-w-16"
+          >
+            {timerLoading ? "Stopping..." : "Stop"}
           </button>
         ) : (
-          <button onClick={() => onStart(task.id)} className="bg-green-600 text-white rounded-lg px-3 py-1 text-sm">
-            Start
+          <button
+            onClick={handleStart}
+            disabled={timerLoading || task.status === "COMPLETED"}
+            className="bg-green-600 text-white rounded-lg px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed min-w-16"
+          >
+            {timerLoading ? "Starting..." : "Start"}
           </button>
         )}
 
