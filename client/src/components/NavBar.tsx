@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-10 bg-white shadow-md">
-      <div className="max-w-5xl mx-auto px-4 h-16 grid grid-cols-3 items-center">
+      <div className="max-w-5xl mx-auto px-4 h-16 flex items-center gap-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-linear-to-br from-slate-700 to-blue-600 flex items-center justify-center shrink-0">
             <CheckSquare size={17} className="text-white" />
