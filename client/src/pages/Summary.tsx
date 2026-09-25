@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, getErrorMessage } from "../api/axios";
 import type { DailySummary } from "../types";
 import { formatDuration } from "../utils/time";
+import { SkeletonBlock, SkeletonCards } from "../components/Skeleton";
 
 export default function Summary() {
   const [data, setData] = useState<DailySummary | null>(null);
@@ -29,7 +30,18 @@ export default function Summary() {
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         {loading ? (
-          <p className="text-gray-500">Loading summary...</p>
+          <div className="space-y-4">
+            <div className="bg-white p-4 rounded-xl shadow">
+            <SkeletonBlock className="h-3 w-40 mb-2" />
+            <SkeletonBlock className="h-9 w-32" />
+            </div>
+            <div className="bg-white p-4 rounded-xl shadow space-y-2">
+            <SkeletonBlock className="h-4 w-1/3 mb-2" />
+            <SkeletonBlock className="h-4 w-full" />
+            <SkeletonBlock className="h-4 w-full" />
+            </div>
+            <SkeletonCards count={3} />
+        </div>
         ) : data ? (
           <>
             <div className="bg-white p-4 rounded-xl shadow">

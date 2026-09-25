@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, getErrorMessage } from "../api/axios";
 import type { TimeLog } from "../types";
 import { formatDuration } from "../utils/time";
+import { SkeletonList } from "../components/Skeleton";
 
 export default function TimeLogs() {
   const [logs, setLogs] = useState<TimeLog[]>([]);
@@ -23,7 +24,7 @@ export default function TimeLogs() {
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
 
         {loading ? (
-          <p className="text-gray-500">Loading time logs...</p>
+          <SkeletonList rows={3} />
         ) : logs.length === 0 ? (
           <p className="text-gray-500">No time logs yet. Start a timer on a task.</p>
         ) : (

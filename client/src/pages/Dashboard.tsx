@@ -1,6 +1,7 @@
 import { useTasks } from "../hooks/useTasks";
 import TaskForm from "../components/TaskForm";
 import TaskItem from "../components/TaskItem";
+import { SkeletonList } from "../components/Skeleton";
 
 export default function Dashboard() {
  
@@ -15,7 +16,7 @@ export default function Dashboard() {
         {error && <p className="text-sm text-red-600">{error}</p>}
 
         {loading ? (
-          <p className="text-gray-500">Loading tasks...</p>
+          <SkeletonList rows={3} />
         ) : tasks.length === 0 ? (
           <p className="text-gray-500">No tasks yet. Add your first one above.</p>
         ) : (
