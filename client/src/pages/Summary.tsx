@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { api, getErrorMessage } from "../api/axios";
 import type { DailySummary } from "../types";
 import { formatDuration } from "../utils/time";
@@ -26,15 +25,6 @@ export default function Summary() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-lg">Today's Summary</h1>
-          <Link to="/" className="text-blue-600 text-sm">
-            Back to tasks
-          </Link>
-        </div>
-      </header>
-
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-4">
         {error && <p className="text-sm text-red-600">{error}</p>}
 

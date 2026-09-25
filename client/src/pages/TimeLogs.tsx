@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { api, getErrorMessage } from "../api/axios";
 import type { TimeLog } from "../types";
 import { formatDuration } from "../utils/time";
@@ -19,14 +18,6 @@ export default function TimeLogs() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-lg">Time Logs</h1>
-          <Link to="/" className="text-blue-600 text-sm">
-            Back to tasks
-          </Link>
-        </div>
-      </header>
 
       <main className="max-w-3xl mx-auto px-4 py-6">
         {error && <p className="text-sm text-red-600 mb-3">{error}</p>}

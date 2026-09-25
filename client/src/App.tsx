@@ -7,6 +7,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import TimeLogs from "./pages/Timelogs";
 import Summary from "./pages/Summary";
+import AppLayout from "./components/AppLayout";
 
 export default function App() {
   return (
@@ -18,9 +19,11 @@ export default function App() {
             <Route path="/signup" element={<Signup />} />
           </Route>
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/timelogs" element={<TimeLogs />} />
-            <Route path="/summary" element={<Summary />} />
+            <Route element={<AppLayout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/timelogs" element={<TimeLogs />} />
+              <Route path="/summary" element={<Summary />} />
+            </Route>
           </Route>
         </Routes>
       </AuthProvider>
