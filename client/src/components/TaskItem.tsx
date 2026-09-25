@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Task, TaskStatus } from "../types";
 import TaskTimer from "./TaskTimer";
+import Modal from "./Modal";
 
 interface Props {
   task: Task;
@@ -20,12 +21,10 @@ const statusLabel: Record<TaskStatus, string> = {
 };
 
 export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: Props) {
-  const [editing, setEditing] = useState(false);
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description ?? "");
+  const [editOpen, setEditOpen] = useState(false);
   const [timerLoading, setTimerLoading] = useState(false);
   const [statusLoading, setStatusLoading] = useState(false);
-
+  const [deleteOpen, setDeleteOpen] = useState(false);;
   const running = task.activeStartTime !== null;
 
   const handleStart = async () => {
@@ -43,76 +42,35 @@ export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: 
   };
 
   const handleStatusChange = async (status: TaskStatus) => {
-  if (statusLoading) return;
-  setStatusLoading(true);
-  await onUpdate(task.id, { status });
-  setStatusLoading(false);
-};
-  const save = async () => {
-    if (!title.trim()) return;
-    const ok = await onUpdate(task.id, {
-      title: title.trim(),
-      description: description.trim() || null,
-    });
-    if (ok) setEditing(false);
+    if (statusLoading) return;
+    setStatusLoading(true);
+    await onUpdate(task.id, { status });
+    setStatusLoading(false);
   };
 
-  const cancel = () => {
-    setTitle(task.title);
-    setDescription(task.description ?? "");
-    setEditing(false);
-  };
-
-  const remove = () => {
-    if (window.confirm("Delete this task?")) onDelete(task.id);
-  };
 
   return (
     <div className="bg-white p-4 rounded-xl shadow space-y-3">
-      {editing ? (
-        <div className="space-y-2">
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
-          />
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={2}
-            className="w-full border rounded-lg px-3 py-2"
-          />
-          <div className="flex gap-2">
-            <button onClick={save} className="bg-blue-600 text-white rounded-lg px-3 py-1">
-              Save
-            </button>
-            <button onClick={cancel} className="border rounded-lg px-3 py-1">
-              Cancel
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <h3 className={`font-semibold ${task.status === "COMPLETED" ? "line-through text-gray-400" : ""}`}>
-            {task.title}
-          </h3>
-          {task.description && <p className="text-sm text-gray-600 mt-1">{task.description}</p>}
-        </div>
-      )}
+      <div>
+        <h3 className={`font-semibold ${task.status === "COMPLETED" ? "line-through text-gray-400" : ""}`}>
+          {task.title}
+        </h3>
+        {task.description && <p className="text-sm text-gray-600 mt-1">{task.description}</p>}
+      </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <select
-  value={task.status}
-  disabled={statusLoading}
-  onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
-  className="border rounded-lg px-2 py-1 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
->
-  {(Object.keys(statusLabel) as TaskStatus[]).map((s) => (
-    <option key={s} value={s}>
-      {statusLabel[s]}
-    </option>
-  ))}
-</select>
+          value={task.status}
+          disabled={statusLoading}
+          onChange={(e) => handleStatusChange(e.target.value as TaskStatus)}
+          className="border rounded-lg px-2 py-1 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {(Object.keys(statusLabel) as TaskStatus[]).map((s) => (
+            <option key={s} value={s}>
+              {statusLabel[s]}
+            </option>
+          ))}
+        </select>
 
         <TaskTimer totalSeconds={task.totalSeconds} activeStartTime={task.activeStartTime} />
 
@@ -135,16 +93,138 @@ export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: 
         )}
 
         <div className="ml-auto flex gap-2 text-sm">
-          {!editing && (
-            <button onClick={() => setEditing(true)} className="text-blue-600">
-              Edit
-            </button>
-          )}
-          <button onClick={remove} className="text-red-600">
+          <button onClick={() => setEditOpen(true)} className="text-blue-600">
+            Edit
+          </button>
+          <button onClick={() => setDeleteOpen(true)} className="text-red-600">
             Delete
           </button>
         </div>
       </div>
+
+      <EditTaskModal
+        open={editOpen}
+        task={task}
+        onClose={() => setEditOpen(false)}
+        onSave={onUpdate}
+      />
+      <DeleteTaskModal
+        open={deleteOpen}
+        taskTitle={task.title}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={async () => {
+            await onDelete(task.id);
+            setDeleteOpen(false);
+        }}
+        />
     </div>
+  );
+}
+
+function EditTaskModal({
+  open,
+  task,
+  onClose,
+  onSave,
+}: {
+  open: boolean;
+  task: Task;
+  onClose: () => void;
+  onSave: (id: string, data: { title?: string; description?: string | null }) => Promise<boolean>;
+}) {
+  const [title, setTitle] = useState(task.title);
+  const [description, setDescription] = useState(task.description ?? "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    if (!title.trim()) {
+      setError("Title can't be empty");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    const ok = await onSave(task.id, { title: title.trim(), description: description.trim() || null });
+    setSaving(false);
+    if (ok) onClose();
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title="Edit task">
+      <div className="space-y-3">
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={saving}
+          className="w-full border rounded-lg px-3 py-2 text-sm"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+          disabled={saving}
+          className="w-full border rounded-lg px-3 py-2 text-sm resize-none"
+        />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <div className="flex gap-2 justify-end">
+          <button onClick={onClose} disabled={saving} className="px-3 py-1.5 rounded-lg border text-sm">
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm disabled:opacity-60"
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+function DeleteTaskModal({
+  open,
+  taskTitle,
+  onClose,
+  onConfirm,
+}: {
+  open: boolean;
+  taskTitle: string;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) {
+  const [deleting, setDeleting] = useState(false);
+
+  const handleConfirm = async () => {
+    setDeleting(true);
+    await onConfirm();
+    setDeleting(false);
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title="Delete task">
+      <div className="space-y-4">
+        <p className="text-sm text-gray-600">
+          Are you sure you want to delete <span className="font-medium text-gray-900">"{taskTitle}"</span>?
+          This will also remove its time logs. This can't be undone.
+        </p>
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={onClose}
+            disabled={deleting}
+            className="px-3 py-1.5 rounded-lg border text-sm disabled:opacity-60"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleConfirm}
+            disabled={deleting}
+            className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-sm disabled:opacity-60"
+          >
+            {deleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
