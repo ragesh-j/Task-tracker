@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import timeLogRoutes from "./routes/timelog.routes";
 import summaryRoutes from "./routes/summary.routes";
+import aiRoutes from "./routes/ai.routes";
 import { prisma } from "./lib/prisma";
 
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/timelogs", timeLogRoutes);
 app.use("/api/summary", summaryRoutes);
+app.use("/api/ai", aiRoutes);
 
 app.use(errorHandler);
 
