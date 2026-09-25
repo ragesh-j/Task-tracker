@@ -40,6 +40,11 @@ This is a condensed log of the key prompts used with Claude (Anthropic) while bu
 ## Frontend: Time Logs & Summary Pages
 - Asked for a page listing all time logs, and a daily summary page showing the same data as the backend summary endpoint.
 
+## AI Task Suggestion Feature
+- Asked to implement the optional AI suggestion feature (turning rough task input into a clearer title and description) using a free AI API.
+- Asked how it should work on the frontend — settled on an explicit "Suggest" button next to the title field (not automatic/debounced), so the user stays in control of when it triggers and can edit the result before saving.
+- Debugged repeated `model_not_found` errors from Groq as models were deprecated/unavailable on the account; resolved by fetching the account's actual available models via the Groq API and picking a supported one (`openai/gpt-oss-20b`) with JSON mode enabled for reliable structured output.
+
 ## UI/UX Polish
 - Asked for a gradient background and fade-in animation on the auth pages.
 - Asked for a shared navbar, then iterated on its design (icon-based pill navigation, layout using flexbox instead of a fixed grid to fix tablet-width wrapping issues).
