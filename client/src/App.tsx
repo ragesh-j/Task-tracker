@@ -5,7 +5,7 @@ import PublicRoute from "./components/PublicRoute";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import TimeLogs from "./pages/Timelogs";
+import TimeLogs from "./pages/TimeLogs";
 import Summary from "./pages/Summary";
 import AppLayout from "./components/AppLayout";
 
