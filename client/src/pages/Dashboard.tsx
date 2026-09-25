@@ -19,6 +19,9 @@ export default function Dashboard() {
             <Link to="/timelogs" className="text-blue-600">
                 Time Logs
             </Link>
+            <Link to="/summary" className="text-blue-600">
+                Summary
+            </Link>
             <button onClick={logout} className="px-3 py-1 rounded-lg bg-gray-800 text-white">
               Log out
             </button>

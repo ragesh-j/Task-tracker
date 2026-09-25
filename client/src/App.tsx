@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import TimeLogs from "./pages/Timelogs";
+import Summary from "./pages/Summary";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/timelogs" element={<TimeLogs />} />
+            <Route path="/summary" element={<Summary />} />
           </Route>
         </Routes>
       </AuthProvider>

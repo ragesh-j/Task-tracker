@@ -26,3 +26,12 @@ export interface TimeLog {
   task: { id: string; title: string };
 }
 
+export interface DailySummary {
+  from: string;
+  to: string;
+  totalSeconds: number;
+  tasksWorkedOn: { id: string; title: string; status: string; seconds: number }[];
+  completedTasks: { id: string; title: string; updatedAt: string }[];
+  inProgressTasks: { id: string; title: string; status: string }[];
+  pendingTasks: { id: string; title: string; status: string }[];
+}
