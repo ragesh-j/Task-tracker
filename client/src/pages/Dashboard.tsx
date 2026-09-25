@@ -2,6 +2,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useTasks } from "../hooks/useTasks";
 import TaskForm from "../components/TaskForm";
 import TaskItem from "../components/TaskItem";
+import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -15,6 +16,9 @@ export default function Dashboard() {
           <h1 className="font-bold text-lg">Task Tracker</h1>
           <div className="flex items-center gap-3 text-sm">
             <span className="text-gray-600">{user?.name}</span>
+            <Link to="/timelogs" className="text-blue-600">
+                Time Logs
+            </Link>
             <button onClick={logout} className="px-3 py-1 rounded-lg bg-gray-800 text-white">
               Log out
             </button>

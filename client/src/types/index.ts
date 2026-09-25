@@ -25,3 +25,4 @@ export interface TimeLog {
   duration: number | null;
   task: { id: string; title: string };
 }
+
