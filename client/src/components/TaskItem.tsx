@@ -52,7 +52,7 @@ export default function TaskItem({ task, onUpdate, onDelete, onStart, onStop }: 
   return (
     <div className="bg-white p-4 rounded-xl shadow space-y-3">
       <div>
-        <h3 className={`font-semibold ${task.status === "COMPLETED" ? "line-through text-gray-400" : ""}`}>
+        <h3 className={`font-semibold ${task.status === "COMPLETED" ? "text-gray-400" : ""}`}>
           {task.title}
         </h3>
         {task.description && <p className="text-sm text-gray-600 mt-1">{task.description}</p>}
