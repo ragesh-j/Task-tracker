@@ -1,1 +1,21 @@
 @import "tailwindcss";
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.auth-bg {
+  background: linear-gradient(-45deg, #4f46e5, #3b82f6, #06b6d4, #4f46e5);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card {
+  animation: fadeInUp 0.4s ease-out;
+}

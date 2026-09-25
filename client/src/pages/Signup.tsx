@@ -42,11 +42,11 @@ export default function Signup() {
   const errText = "text-sm text-red-600 mt-1";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center auth-bg px-44">
       <form
         onSubmit={handleSubmit}
         noValidate
-        className="w-full max-w-sm bg-white p-6 rounded-xl shadow space-y-4"
+        className="auth-card w-full max-w-sm bg-white/95 backdrop-blur p-6 rounded-2xl shadow-xl space-y-4"
       >
         <h1 className="text-2xl font-bold">Sign up</h1>
         {serverError && <p className="text-sm text-red-600">{serverError}</p>}
